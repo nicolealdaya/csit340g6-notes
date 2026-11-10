@@ -15,6 +15,11 @@ function Notes() {
     },
   ]);
   const [form, setForm] = useState({ title: "", body: "" });
+  const [search, setSearch] = useState("");
+
+  const filteredNotes = notes.filter((note) =>
+    note.title.toLowerCase().includes(search.toLowerCase()),
+  );
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -52,6 +57,8 @@ function Notes() {
             SEARCH
           </p>
           <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by title"
             className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
@@ -88,7 +95,7 @@ function Notes() {
         <h2 className="mb-6 text-3xl">All notes</h2>
 
         <ul className="grid grid-cols-3 items-start gap-5">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <li
               key={note.id}
               className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
@@ -105,7 +112,7 @@ function Notes() {
           ))}
         </ul>
 
-        {notes.length === 0 && (
+        {filteredNotes.length === 0 && (
           <p className="text-lg text-[#949494]">No notes found</p>
         )}
       </section>
