@@ -1,57 +1,64 @@
-import { useState, useEffect } from 'react'
-import NoteCard from './NoteCard.jsx'
+import { useState, useEffect } from "react";
+import NoteCard from "./NoteCard.jsx";
 
 const startingNotes = [
   {
     id: 1,
-    title: 'Review map and filter',
-    body: 'Redo the TodoMVC steps without looking at the guide.',
+    title: "Review map and filter",
+    body: "Redo the TodoMVC steps without looking at the guide.",
   },
   {
     id: 2,
-    title: 'Prepare for the quiz',
-    body: 'Practice writing one handler for many inputs.',
+    title: "Prepare for the quiz",
+    body: "Practice writing one handler for many inputs.",
   },
-]
+];
 
 function Notes() {
   const [notes, setNotes] = useState(() => {
-    const saved = localStorage.getItem('notes')
-    return saved ? JSON.parse(saved) : startingNotes
-  })
-  const [form, setForm] = useState({ title: '', body: '' })
-  const [search, setSearch] = useState('')
+    const saved = localStorage.getItem("notes");
+    return saved ? JSON.parse(saved) : startingNotes;
+  });
+  const [form, setForm] = useState({ title: "", body: "" });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes))
-  }, [notes])
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      localStorage.setItem("draft", JSON.stringify(form));
+    }, 1000);
+    return () => clearTimeout(id);
+  }, [form]);
 
   const filteredNotes = notes.filter((note) =>
-    note.title.toLowerCase().includes(search.toLowerCase())
-  )
+    note.title.toLowerCase().includes(search.toLowerCase()),
+  );
 
   function handleChange(event) {
-    const { name, value } = event.target
-    setForm({ ...form, [name]: value })
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
   }
 
   function handleSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
 
-    const title = form.title.trim()
-    const body = form.body.trim()
+    const title = form.title.trim();
+    const body = form.body.trim();
 
-    if (title === '' || body === '') {
-      return
+    if (title === "" || body === "") {
+      return;
     }
 
-    const newNote = { id: Date.now(), title, body }
-    setNotes([...notes, newNote])
-    setForm({ title: '', body: '' })
+    const newNote = { id: Date.now(), title, body };
+    setNotes([...notes, newNote]);
+    setForm({ title: "", body: "" });
   }
 
   function handleDelete(id) {
-    setNotes(notes.filter((note) => note.id !== id))
+    setNotes(notes.filter((note) => note.id !== id));
   }
 
   return (
@@ -62,7 +69,9 @@ function Notes() {
         </h1>
 
         <div>
-          <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">SEARCH</p>
+          <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">
+            SEARCH
+          </p>
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -72,7 +81,9 @@ function Notes() {
         </div>
 
         <form onSubmit={handleSubmit} className="grid gap-3">
-          <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
+          <p className="text-[13px] font-normal tracking-wide text-[#949494]">
+            NEW NOTE
+          </p>
           <input
             name="title"
             value={form.title}
@@ -122,7 +133,7 @@ function Notes() {
         )}
       </section>
     </div>
-  )
+  );
 }
 
-export default Notes
+export default Notes;
